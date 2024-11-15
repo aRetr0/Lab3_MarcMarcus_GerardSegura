@@ -8,6 +8,8 @@ from datetime import datetime
 import paho.mqtt.client as mqtt
 import requests
 
+from config import API_KEY
+
 
 def get_weather_data(lat, lon, api_key):
     url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric"
@@ -16,7 +18,9 @@ def get_weather_data(lat, lon, api_key):
     if 'current' in data:
         return data['current']['temp'], data['current']['humidity'], data['current']['pressure']
     else:
-        raise KeyError("The 'current' key is not present in the API response")
+        print("Error: 'current' key not found in the API response")
+        print("Response:", data)
+        return None, None, None
 
 
 def generate_node_id():
@@ -57,5 +61,5 @@ if __name__ == "__main__":
     period = int(sys.argv[3])
     mqtt_server = sys.argv[4]
     mqtt_topic = sys.argv[5]
-    api_key = "15d8c89a79ce8bbf11e3431de98c5e86"
+    api_key = API_KEY
     main(lat, lon, period, mqtt_server, mqtt_topic, api_key)
