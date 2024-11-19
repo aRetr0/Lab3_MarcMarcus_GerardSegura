@@ -8,7 +8,7 @@ import base64
 
 messages = []
 
-def on_message(client, userdata, msg):
+def on_message(msg):
     global messages
     data = json.loads(msg.payload)
     messages.append(data)
@@ -40,7 +40,7 @@ def index():
 
     return template('<img src="data:image/png;base64,{{img}}" />', img=img)
 
-def main(mqtt_server, mqtt_topic, n):
+def main(mqtt_server, mqtt_topic):
     client = mqtt.Client()
     client.on_message = on_message
     client.connect(mqtt_server)
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     mqtt_server = sys.argv[1]
     mqtt_topic = sys.argv[2]
     n = int(sys.argv[3])
-    main(mqtt_server, mqtt_topic, n)
+    main(mqtt_server, mqtt_topic)

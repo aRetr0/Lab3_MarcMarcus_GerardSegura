@@ -12,13 +12,13 @@ from config import API_KEY
 
 
 def get_weather_data(lat, lon, api_key):
-    url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&appid={api_key}&units=metric"
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric"
     response = requests.get(url)
     data = response.json()
-    if 'current' in data:
-        return data['current']['temp'], data['current']['humidity'], data['current']['pressure']
+    if 'main' in data:
+        return data['main']['temp'], data['main']['humidity'], data['main']['pressure']
     else:
-        print("Error: 'current' key not found in the API response")
+        print("Error: 'main' key not found in the API response")
         print("Response:", data)
         return None, None, None
 
@@ -45,6 +45,7 @@ def main(lat, lon, period, mqtt_server, mqtt_topic, api_key):
                     "humidity": humidity
                 }
                 client.publish(mqtt_topic, json.dumps(message))
+                print(f"Published: {message}")
             except KeyError as e:
                 print(f"Error fetching weather data: {e}")
             time.sleep(period)
